@@ -1,60 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
-namespace Fluentax.Apis.ExchangeRates.Samples
+var builder = new ConfigurationBuilder()
+    .AddJsonFile($"appsettings.json")
+    .AddUserSecrets<Program>();
+
+var config = builder.Build();
+
+string token = null;
+using (var tokenClient = new HttpClient())
 {
-    class Program
+    using var tokenRequestContent = new FormUrlEncodedContent(
+    new Dictionary<string, string>
     {
-        static async Task Main()
-        {
-            var builder = new ConfigurationBuilder()
-                .AddJsonFile($"appsettings.json")
-                .AddUserSecrets<Program>();
+                { "grant_type", "client_credentials" },
+                { "client_id", config["Auth:ClientId"] },
+                { "client_secret", config["Auth:ClientSecret"] },
+                { "scope", "fx_api" },
+    });
 
-            var config = builder.Build();
+    using var response = await tokenClient.PostAsync(config["Auth:TokenEndpoint"], tokenRequestContent);
 
-            string token = null;
-            using (var tokenClient = new HttpClient())
-            {
-                using var tokenRequestContent = new FormUrlEncodedContent(
-                new Dictionary<string, string>
-                {
-                    { "grant_type", "client_credentials" },
-                    { "client_id", config["Auth:ClientId"] },
-                    { "client_secret", config["Auth:ClientSecret"] },
-                    { "scope", "fx_api" },
-                });
+    var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
+    token = tokenResponse.access_token;
+}
 
-                using var response = await tokenClient.PostAsync(config["Auth:TokenEndpoint"], tokenRequestContent);
+using var apiClient = new HttpClient
+{
+    BaseAddress = new Uri(config["ApiBaseAddress"])
+};
 
-                var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
-                token = tokenResponse.access_token;
-            }
+apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            using var apiClient = new HttpClient
-            {
-                BaseAddress = new Uri(config["ApiBaseAddress"])
-            };
+var bankId = "PLCB";
+var format = "csv";
+var latestRates = await apiClient.GetStringAsync($"v1/Banks/{bankId}/DailyRates/Latest?format={format}");
 
-            apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+Console.WriteLine(latestRates);
 
-            var bankId = "PLCB";
-            var format = "csv";
-            var latestRates = await apiClient.GetStringAsync($"v1/Banks/{bankId}/DailyRates/Latest?format={format}");
+Console.ReadKey();
 
-            Console.WriteLine(latestRates);
-
-            Console.ReadKey();
-        }
-    }
-
-    record TokenResponse
-    {
-        public string access_token { get; set; }
-    }
+record TokenResponse
+{
+    public string access_token { get; set; }
 }
