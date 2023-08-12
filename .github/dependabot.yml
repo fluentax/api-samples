@@ -1,0 +1,6 @@
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/dotnet/Fluentax.Apis.ExchangeRates.Samples/"
+    schedule:
+      interval: "daily"
