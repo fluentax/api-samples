@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Configuration;
 
 var builder = new ConfigurationBuilder()
@@ -23,7 +24,7 @@ using (var tokenClient = new HttpClient())
     using var response = await tokenClient.PostAsync(config["Auth:TokenEndpoint"], tokenRequestContent);
 
     var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
-    token = tokenResponse.access_token;
+    token = tokenResponse.AccessToken;
 }
 
 using var apiClient = new HttpClient
@@ -43,5 +44,6 @@ Console.ReadKey();
 
 record TokenResponse
 {
-    public string access_token { get; set; }
+    [JsonPropertyName("access_token")]
+    public string AccessToken { get; set; }
 }
