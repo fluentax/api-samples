@@ -13,15 +13,16 @@ string token = null;
 using (var tokenClient = new HttpClient())
 {
     using var tokenRequestContent = new FormUrlEncodedContent(
-    new Dictionary<string, string>
-    {
-                { "grant_type", "client_credentials" },
-                { "client_id", config["Auth:ClientId"] },
-                { "client_secret", config["Auth:ClientSecret"] },
-                { "scope", "fx_api" },
-    });
+        new Dictionary<string, string>
+        {
+            ["grant_type"] = "client_credentials",
+            ["client_id"] = config["Auth:ClientId"],
+            ["client_secret"] = config["Auth:ClientSecret"],
+            ["scope"] = "fx_api",
+        });
 
     using var response = await tokenClient.PostAsync(config["Auth:TokenEndpoint"], tokenRequestContent);
+    response.EnsureSuccessStatusCode();
 
     var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
     token = tokenResponse.AccessToken;
