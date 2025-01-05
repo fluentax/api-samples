@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "dotenv": "^16.4.7"
+  },
+  "name": "fluentax-node-samples",
+  "version": "1.0.0",
+  "description": "A Node.js sample application demonstrating how to authenticate and retrieve data from the Fluentax API.",
+  "devDependencies": {},
+  "author": "Fluentax",
+  "license": "MIT",
+  "type": "module"
+}
