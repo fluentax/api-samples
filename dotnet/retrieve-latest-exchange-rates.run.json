@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "default": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "Auth__TokenEndpoint": "https://sso.fluentax.com/auth/realms/fluentax/protocol/openid-connect/token",
+        "ApiBaseAddress": "https://fx-api.fluentax.com"
+      }
+    }
+  }
+}
