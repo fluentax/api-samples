@@ -11,7 +11,7 @@ using System.Text.Json.Serialization;
 
 var builder = new ConfigurationBuilder()
     .AddEnvironmentVariables()
-    .AddUserSecrets<Program>();
+    .AddUserSecrets("FluentaxSamples");
 
 var config = builder.Build();
 

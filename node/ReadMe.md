@@ -25,5 +25,5 @@
 
 ### [Retrieve the latest exchange rates for a given bank](/node/retrieveLatestExchangeRates.js)
 
-Method: DailyRates/Latest<br>
-Description: The following code sample performs the authentication to acquire an access token and then calls the Exchange Rate API's <code>latest</code> method to retrieve the latest available exchange rates for the given bank.
+Method: `DailyRates/Latest`<br>
+Description: This sample uses the client credentials flow to acquire an access token, then calls the Exchange Rate API's `latest` method to retrieve the most recent exchange rates for the specified bank.
